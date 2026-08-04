@@ -1,0 +1,38 @@
+package com.gustavofantato.blackjack.model;
+
+import com.gustavofantato.blackjack.strategy.PlayerStrategy;
+
+public class Player {
+
+    // Attributes
+    private final String name;
+    private Hand hand;
+    private final PlayerStrategy strategy;
+
+    // Constructor
+    public Player(String name, PlayerStrategy strategy){
+        this.name = name;
+        this.strategy = strategy;
+        this.hand = new Hand();
+    }
+
+    // Methods
+
+    // Receives the new card that has been given by the game
+    public void receiveCard(Card newCard){
+        this.hand.addNewCard(newCard);
+    }
+
+    // Verify the strategy to take the decision if hits or not
+    public boolean wantsToHit(Deck deck){
+        return strategy.shouldHit(hand, deck);
+    }
+
+    // Getters
+    public Hand getHand() {
+        return hand;
+    }
+    public String getName() {
+        return name;
+    }
+}
