@@ -1,5 +1,7 @@
 package com.gustavofantato.blackjack.model;
 
+import static com.gustavofantato.blackjack.model.Rank.*;
+
 public class Card {
 
     // Attributes
@@ -22,7 +24,15 @@ public class Card {
 
     @Override
     public String toString() {
-        return rank + " of " + suit; // when print: "KING of SPADES"
+        if (!faceUp) {
+            return "HIDDEN"; // if faceUp false, doesn't shows
+        }
+
+        if (getRank() == ACE){
+            return rank + " (11/1)" + " of " + suit;
+        }
+
+        return rank + " (" + getRank().getValue() + ")" + " of " + suit;
     }
 
     // Getters

@@ -44,6 +44,11 @@ public class Hand {
         return total;
     }
 
+    @Override
+    public String toString() {
+        return String.valueOf(cards);
+    }
+
     // Getters
     public List<Card> getCards() {
         return cards;

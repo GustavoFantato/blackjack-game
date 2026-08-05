@@ -24,7 +24,6 @@ public class BlackJackGame {
 
         // 1. Player buys (visible)
         player.receiveCard(deck.drawCard());
-        System.out.println("Player's hand: " + player.getHand());
 
         // 2. Bot buys (visible)
         bot.receiveCard(deck.drawCard());
@@ -37,7 +36,8 @@ public class BlackJackGame {
         hiddenCard.setFaceUp(false);
         bot.receiveCard(hiddenCard);
 
-
+        System.out.println("Player's hand: " + player.getHand());
+        System.out.println("Dealers's hand: " + bot.getHand());
     }
 
     public static void main(String[] arg){
@@ -48,6 +48,14 @@ public class BlackJackGame {
         BlackJackGame game = new BlackJackGame(player, bot);
 
         game.startRound();
+
+        boolean playerStand = false;
+        boolean botStand = false;
+
+        while(!playerStand && !botStand){
+            playerStand = player.wantsToHit(game.deck);
+            botStand = bot.wantsToHit(game.deck);
+        }
     }
 
 }
