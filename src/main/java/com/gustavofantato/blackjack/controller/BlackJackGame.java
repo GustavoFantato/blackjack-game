@@ -11,54 +11,95 @@ public class BlackJackGame {
     private final Player bot;
 
     // Constructor
-    public BlackJackGame(Player player, Player bot){
+    public BlackJackGame(Player player, Player bot) {
         this.player = player;
         this.bot = bot;
         this.deck = new Deck();
     }
 
     // Methods
-    public void startRound(){
 
-        deck.resetDeck(); // to reset and shuffle the deck
+    public void startRound() {
+        deck.resetDeck(); // Resets and shuffles the deck
+        player.getHand().resetHand();
+        bot.getHand().resetHand();
 
-        // 1. Player buys (visible)
+        // 1. Player receives first card (visible)
         player.receiveCard(deck.drawCard());
 
-        // 2. Bot buys (visible)
+        // 2. Bot receives first card (visible)
         bot.receiveCard(deck.drawCard());
 
-        // 3. Player buys (visible)
+        // 3. Player receives second card (visible)
         player.receiveCard(deck.drawCard());
 
-        // 4. Bot buys (not visible)
+        // 4. Bot receives second card (face down / hidden)
         Card hiddenCard = deck.drawCard();
         hiddenCard.setFaceUp(false);
         bot.receiveCard(hiddenCard);
 
         System.out.println("Player's hand: " + player.getHand());
-        System.out.println("Dealers's hand: " + bot.getHand());
+        System.out.println("Dealer's hand: " + bot.getHand());
     }
 
-    public static void main(String[] arg){
+    public Card hit(Player p) {
+        Card card = deck.drawCard();
+        p.receiveCard(card);
+        System.out.println(p.getName() + "'s hand: " + p.getHand());
+        return card;
+    }
 
-        Player player = new Player("Gustavo", new HumanStrategy());
-        Player bot = new Player("Dealer", new ConservativeStrategy());
+    public void stand() {
+        System.out.println("\n--- Dealer's Turn ---");
+        revealDealerCards(bot);
+        System.out.println("Dealer reveals hidden card: " + bot.getHand());
+        playDealerTurn();
+    }
 
-        BlackJackGame game = new BlackJackGame(player, bot);
-
-        game.startRound();
-
-        boolean playerStand = false;
-        boolean botStand = false;
-
-        while(!playerStand && !botStand){
-            playerStand = player.wantsToHit(game.deck);
-            botStand = bot.wantsToHit(game.deck);
+    public void revealDealerCards(Player dealer) {
+        Card hiddenCard = dealer.getHand().getHiddenCard();
+        if (hiddenCard != null) {
+            hiddenCard.setFaceUp(true);
         }
     }
 
+    public void playDealerTurn() {
+        while (bot.wantsToHit(deck)) {
+            System.out.println("The dealer hits...");
+            hit(bot);
+        }
+        System.out.println("Dealer stands.");
+    }
+
+    public boolean isBust(Player p) {
+        return p.getHand().calculateScore() > 21;
+    }
+
+    public boolean hasBlackjack(Player p) {
+        return p.getHand().calculateScore() == 21 && p.getHand().getCards().size() == 2;
+    }
+
+    public String determineWinner() {
+        int playerScore = player.getHand().calculateScore();
+        int botScore = bot.getHand().calculateScore();
+
+        if (playerScore > 21) {
+            return "Dealer wins! You busted with " + playerScore + " points.";
+        }
+        if (botScore > 21) {
+            return "Player wins! Dealer busted with " + botScore + " points.";
+        }
+        if (playerScore > botScore) {
+            return "Player wins! (" + playerScore + " vs " + botScore + ")";
+        }
+        if (botScore > playerScore) {
+            return "Dealer wins! (" + botScore + " vs " + playerScore + ")";
+        }
+        return "It's a tie! (" + playerScore + " pts)";
+    }
+
+    // Getters
+    public Deck getDeck() { return deck; }
+    public Player getPlayer() { return player; }
+    public Player getBot() { return bot; }
 }
-
-
-

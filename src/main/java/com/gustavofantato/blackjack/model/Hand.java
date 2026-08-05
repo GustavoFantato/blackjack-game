@@ -53,4 +53,13 @@ public class Hand {
     public List<Card> getCards() {
         return cards;
     }
+
+    public Card getHiddenCard() {
+        for (Card card : cards) {
+            if (!card.isFaceUp()) {
+                return card; // returns the first hidden card
+            }
+        }
+        return null;
+    }
 }
