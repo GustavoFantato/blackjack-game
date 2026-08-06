@@ -25,7 +25,7 @@ public class Card {
     @Override
     public String toString() {
         if (!faceUp) {
-            return "HIDDEN"; // if faceUp false, doesn't shows
+            return "HIDDEN"; // if faceUp false, doesn't show
         }
 
         if (getRank() == ACE){

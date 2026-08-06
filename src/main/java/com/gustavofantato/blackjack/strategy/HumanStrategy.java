@@ -15,7 +15,7 @@ public class HumanStrategy implements PlayerStrategy{
 
     @Override
     public boolean shouldHit(Hand hand, Deck deck) {
-        System.out.println("Current Score: " + hand.calculateScore());
+        System.out.println("Your current score: " + hand.calculateScore());
         System.out.print("HIT or PASS? (H/P): ");
         String response = scanner.nextLine().trim().toLowerCase();
         return response.equals("h");

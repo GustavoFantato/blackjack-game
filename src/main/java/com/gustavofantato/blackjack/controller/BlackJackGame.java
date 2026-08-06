@@ -38,21 +38,24 @@ public class BlackJackGame {
         hiddenCard.setFaceUp(false);
         bot.receiveCard(hiddenCard);
 
-        System.out.println("Player's hand: " + player.getHand());
+        System.out.println(player.getName() + "'s hand: " + player.getHand());
         System.out.println("Dealer's hand: " + bot.getHand());
+
+        System.out.println("--- " + player.getName() + "'s turn! ---");
     }
 
-    public Card hit(Player p) {
+    public void hit(Player p) {
         Card card = deck.drawCard();
         p.receiveCard(card);
         System.out.println(p.getName() + "'s hand: " + p.getHand());
-        return card;
+        delay(2000);
     }
 
     public void stand() {
         System.out.println("\n--- Dealer's Turn ---");
         revealDealerCards(bot);
         System.out.println("Dealer reveals hidden card: " + bot.getHand());
+        delay(5000);
         playDealerTurn();
     }
 
@@ -64,11 +67,19 @@ public class BlackJackGame {
     }
 
     public void playDealerTurn() {
+
+        if(hasBlackjack(bot)){
+            System.out.println("The dealer has got a BlackJack!");
+            delay(1000);
+        }
+
         while (bot.wantsToHit(deck)) {
             System.out.println("The dealer hits...");
             hit(bot);
+            delay(3500);
         }
         System.out.println("Dealer stands.");
+        delay(1000);
     }
 
     public boolean isBust(Player p) {
@@ -96,6 +107,15 @@ public class BlackJackGame {
             return "Dealer wins! (" + botScore + " vs " + playerScore + ")";
         }
         return "It's a tie! (" + playerScore + " pts)";
+    }
+
+    // Better console read
+    private void delay(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     // Getters
