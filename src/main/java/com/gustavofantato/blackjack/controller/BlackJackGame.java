@@ -2,6 +2,9 @@ package com.gustavofantato.blackjack.controller;
 
 import com.gustavofantato.blackjack.model.*;
 import com.gustavofantato.blackjack.strategy.*;
+import com.gustavofantato.blackjack.util.CurrencyFormatter;
+
+import java.util.Formatter;
 
 public class BlackJackGame {
 
@@ -9,12 +12,17 @@ public class BlackJackGame {
     private final Deck deck;
     private final Player player;
     private final Player bot;
+    private double currentBet;
+    private final double winMultiplier;
+    private final double blackjackMultiplier;
 
     // Constructor
     public BlackJackGame(Player player, Player bot) {
         this.player = player;
         this.bot = bot;
         this.deck = new Deck();
+        this.winMultiplier = 2.0;
+        this.blackjackMultiplier = 2.5;
     }
 
     // Methods
@@ -33,7 +41,7 @@ public class BlackJackGame {
         // 3. Player receives second card (visible)
         player.receiveCard(deck.drawCard());
 
-        // 4. Bot receives second card (face down / hidden)
+        // 4. Bot receives the second card (face down / hidden)
         Card hiddenCard = deck.drawCard();
         hiddenCard.setFaceUp(false);
         bot.receiveCard(hiddenCard);
@@ -76,7 +84,7 @@ public class BlackJackGame {
         while (bot.wantsToHit(deck)) {
             System.out.println("The dealer hits...");
             hit(bot);
-            delay(3500);
+            delay(1500);
         }
         System.out.println("Dealer stands.");
         delay(1000);
@@ -90,23 +98,82 @@ public class BlackJackGame {
         return p.getHand().calculateScore() == 21 && p.getHand().getCards().size() == 2;
     }
 
-    public String determineWinner() {
+    public boolean newPlayerBet(double quantity){
+        boolean success = player.getWallet().removeCash(quantity);
+        currentBet = quantity;
+
+        if(success){
+            System.out.println("Bet placed successfully! Current bet: " + CurrencyFormatter.formatUSD(quantity));
+            return true;
+        }
+
+        System.out.println("Not enough cash in wallet to this bet!");
+        return false;
+    }
+
+    public void playerWins(){
+
+        double receiveAmount;
+        double multiplier;
+
+        // If the player wins with a blackjack, the multiplier is different from a common win
+        if (hasBlackjack(player)){
+            receiveAmount = blackjackMultiplier * currentBet;
+            multiplier = blackjackMultiplier;
+        } else{
+            receiveAmount = winMultiplier * currentBet;
+            multiplier = winMultiplier;
+        }
+
+        player.getWallet().addCash((receiveAmount)); // Adds the amount
+        System.out.println("Added " +  CurrencyFormatter.formatUSD(receiveAmount) + " to " + player.getName() + " ("
+            + multiplier + ("x multiplier)"));
+        delay(300);
+        player.printWallet();
+        delay(300);
+    }
+
+    public void playerLose(){
+        System.out.println(player.getName() + " lost the bet of " + CurrencyFormatter.formatUSD(currentBet) + ".");
+        delay(300);
+        player.printWallet();
+        delay(300);
+    }
+
+    public void draw(){
+        player.getWallet().addCash((currentBet)); // Adds the amount
+        System.out.println(player.getName() + " received back " + CurrencyFormatter.formatUSD(currentBet) + " from the draw.");
+        player.printWallet();
+        delay(300);
+    }
+
+    public void determineWinner() {
         int playerScore = player.getHand().calculateScore();
         int botScore = bot.getHand().calculateScore();
 
         if (playerScore > 21) {
-            return "Dealer wins! You busted with " + playerScore + " points.";
+            System.out.println("Dealer wins! You busted with " + playerScore + " points.");
+            playerLose();
+            return;
         }
         if (botScore > 21) {
-            return "Player wins! Dealer busted with " + botScore + " points.";
+            System.out.println("Player wins! Dealer busted with " + botScore + " points.");
+            playerWins();
+            return;
         }
         if (playerScore > botScore) {
-            return "Player wins! (" + playerScore + " vs " + botScore + ")";
+            System.out.println("Player wins! (" + playerScore + " vs " + botScore + ")");
+            playerWins();
+            return;
         }
         if (botScore > playerScore) {
-            return "Dealer wins! (" + botScore + " vs " + playerScore + ")";
+            System.out.println("Dealer wins! (" + botScore + " vs " + playerScore + ")");
+            playerLose();
+            return;
         }
-        return "It's a tie! (" + playerScore + " pts)";
+
+        System.out.println("It's a tie! (" + playerScore + " pts)");
+        draw();
     }
 
     // Better console read

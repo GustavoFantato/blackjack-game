@@ -1,5 +1,7 @@
 package com.gustavofantato.blackjack.model;
 
+import com.gustavofantato.blackjack.util.CurrencyFormatter;
+
 public class Wallet {
 
     // Attributes
@@ -33,7 +35,6 @@ public class Wallet {
         }
 
         if(!hasEnough(quantity)){
-            System.out.println("No enough cash on wallet!");
             return false;
         }
 

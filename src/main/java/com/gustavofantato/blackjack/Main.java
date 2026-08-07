@@ -3,6 +3,7 @@ package com.gustavofantato.blackjack;
 import com.gustavofantato.blackjack.controller.BlackJackGame;
 import com.gustavofantato.blackjack.model.Player;
 import com.gustavofantato.blackjack.strategy.*;
+import com.gustavofantato.blackjack.util.CurrencyFormatter;
 
 import java.util.Scanner;
 
@@ -50,6 +51,36 @@ public class Main {
             // Starting the game
             BlackJackGame game = new BlackJackGame(p, bot);
 
+            // Get player's bet
+            double betAmount = 0.0;
+
+            while (true) {
+                System.out.println("Current balance: " + CurrencyFormatter.formatUSD(p.getWallet().getCash()));
+                System.out.print("Please, insert the bet amount: ");
+                input = scanner.nextLine().trim();
+
+                try {
+                    betAmount = Double.parseDouble(input);
+
+                    if (betAmount <= 0) {
+                        System.out.println("Invalid amount! Bet must be greater than zero.\n");
+                        continue;
+                    }
+
+                    if (!p.getWallet().hasEnough(betAmount)) {
+                        System.out.println("Not enough cash in wallet for this bet!\n");
+                        continue;
+                    }
+
+
+                    game.newPlayerBet(betAmount);
+                    break;
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input! Please enter a valid number (e.g., 50 or 50.0).\n");
+                }
+            }
+
             game.startRound();
 
             if (game.hasBlackjack(p)) {
@@ -57,7 +88,7 @@ public class Main {
             } else {
                 while (true){
 
-                    // Verify if player has got a blackjack
+                    // Verify if the player has got a blackjack
                     if (game.hasBlackjack(p)){
                         System.out.println(p.getName() + " got a blackjack! Automatic standing...");
                         break;
@@ -83,7 +114,7 @@ public class Main {
                 game.stand();
             }
 
-            System.out.println(game.determineWinner());
+            game.determineWinner();
             System.out.println("Thanks for playing!");
 
             while (true) {
@@ -91,8 +122,7 @@ public class Main {
                 input = scanner.nextLine().trim().toLowerCase();
 
                 if (input.equals("y") || input.equals("yes")) {
-                    playAgain = true;
-                    break;
+                    break; // playAgain already equals 'true'
                 } else if (input.equals("n") || input.equals("no")) {
                     playAgain = false;
                     break;
