@@ -9,11 +9,16 @@ import org.springframework.stereotype.Component;
  * The AI passes [P] if the current score is 15>=
  **/
 
-@Component
+@Component("conservativeStrategy")
 public class ConservativeStrategy implements PlayerStrategy{
 
     @Override
     public boolean shouldHit(Hand hand, Deck deck) {
         return (hand.calculateScore() < 15);
+    }
+
+    @Override
+    public String getName() {
+        return "Conservative";
     }
 }

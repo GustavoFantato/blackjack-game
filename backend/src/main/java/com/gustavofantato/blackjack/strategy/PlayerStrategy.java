@@ -12,4 +12,5 @@ public interface PlayerStrategy {
      */
 
     boolean shouldHit(Hand hand, Deck deck);
+    String getName();
 }

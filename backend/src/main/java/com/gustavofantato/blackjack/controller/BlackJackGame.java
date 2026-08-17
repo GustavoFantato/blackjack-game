@@ -46,24 +46,24 @@ public class BlackJackGame {
         hiddenCard.setFaceUp(false);
         bot.receiveCard(hiddenCard);
 
-        System.out.println(player.getName() + "'s hand: " + player.getHand());
-        System.out.println("Dealer's hand: " + bot.getHand());
-
-        System.out.println("--- " + player.getName() + "'s turn! ---");
+        // CONSOLE MODE
+//        System.out.println(player.getName() + "'s hand: " + player.getHand());
+//        System.out.println("Dealer's hand: " + bot.getHand());
+//        System.out.println("--- " + player.getName() + "'s turn! ---");
     }
 
     public void hit(Player p) {
         Card card = deck.drawCard();
         p.receiveCard(card);
-        System.out.println(p.getName() + "'s hand: " + p.getHand());
-        delay(2000);
+
+        // CONSOLE MODE
+//        System.out.println(p.getName() + "'s hand: " + p.getHand());
     }
 
     public void stand() {
-        System.out.println("\n--- Dealer's Turn ---");
+//        System.out.println("\n--- Dealer's Turn ---");
         revealDealerCards(bot);
-        System.out.println("Dealer reveals hidden card: " + bot.getHand());
-        delay(5000);
+//        System.out.println("Dealer reveals hidden card: " + bot.getHand());
         playDealerTurn();
     }
 
@@ -74,20 +74,17 @@ public class BlackJackGame {
         }
     }
 
-    public void playDealerTurn() {
+    private void playDealerTurn() {
 
-        if(hasBlackjack(bot)){
-            System.out.println("The dealer has got a BlackJack!");
-            delay(1000);
-        }
+//        if(hasBlackjack(bot)){
+//            System.out.println("The dealer has got a BlackJack!");
+//        }
 
-        while (bot.wantsToHit(deck)) {
-            System.out.println("The dealer hits...");
+        while (bot.wantsToHit(deck) && !isBust(bot)) {
+//            System.out.println("The dealer hits...");
             hit(bot);
-            delay(1500);
         }
-        System.out.println("Dealer stands.");
-        delay(1000);
+//        System.out.println("Dealer stands.");
     }
 
     public boolean isBust(Player p) {
@@ -103,11 +100,11 @@ public class BlackJackGame {
         currentBet = quantity;
 
         if(success){
-            System.out.println("Bet placed successfully! Current bet: " + CurrencyFormatter.formatUSD(quantity));
+//            System.out.println("Bet placed successfully! Current bet: " + CurrencyFormatter.formatUSD(quantity));
             return true;
         }
 
-        System.out.println("Not enough cash in wallet to this bet!");
+//        System.out.println("Not enough cash in wallet to this bet!");
         return false;
     }
 
@@ -126,25 +123,20 @@ public class BlackJackGame {
         }
 
         player.getWallet().addCash((receiveAmount)); // Adds the amount
-        System.out.println("Added " +  CurrencyFormatter.formatUSD(receiveAmount) + " to " + player.getName() + " ("
-            + multiplier + ("x multiplier)"));
-        delay(300);
+//        System.out.println("Added " +  CurrencyFormatter.formatUSD(receiveAmount) + " to " + player.getName() + " ("
+//            + multiplier + ("x multiplier)"));
         player.printWallet();
-        delay(300);
     }
 
     public void playerLose(){
-        System.out.println(player.getName() + " lost the bet of " + CurrencyFormatter.formatUSD(currentBet) + ".");
-        delay(300);
+//        System.out.println(player.getName() + " lost the bet of " + CurrencyFormatter.formatUSD(currentBet) + ".");
         player.printWallet();
-        delay(300);
     }
 
     public void draw(){
         player.getWallet().addCash((currentBet)); // Adds the amount
-        System.out.println(player.getName() + " received back " + CurrencyFormatter.formatUSD(currentBet) + " from the draw.");
+//        System.out.println(player.getName() + " received back " + CurrencyFormatter.formatUSD(currentBet) + " from the draw.");
         player.printWallet();
-        delay(300);
     }
 
     public void determineWinner() {
@@ -152,38 +144,38 @@ public class BlackJackGame {
         int botScore = bot.getHand().calculateScore();
 
         if (playerScore > 21) {
-            System.out.println("Dealer wins! You busted with " + playerScore + " points.");
+//            System.out.println("Dealer wins! You busted with " + playerScore + " points.");
             playerLose();
             return;
         }
         if (botScore > 21) {
-            System.out.println("Player wins! Dealer busted with " + botScore + " points.");
+//            System.out.println("Player wins! Dealer busted with " + botScore + " points.");
             playerWins();
             return;
         }
         if (playerScore > botScore) {
-            System.out.println("Player wins! (" + playerScore + " vs " + botScore + ")");
-            playerWins();
+//
+            playerWins();            System.out.println("Player wins! (" + playerScore + " vs " + botScore + ")");
             return;
         }
         if (botScore > playerScore) {
-            System.out.println("Dealer wins! (" + botScore + " vs " + playerScore + ")");
+//            System.out.println("Dealer wins! (" + botScore + " vs " + playerScore + ")");
             playerLose();
             return;
         }
 
-        System.out.println("It's a tie! (" + playerScore + " pts)");
+//        System.out.println("It's a tie! (" + playerScore + " pts)");
         draw();
     }
 
-    // Better console read
-    private void delay(int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
+    // Better console read (when the project was running on console mode)
+//    private void delay(int milliseconds) {
+//        try {
+//            Thread.sleep(milliseconds);
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//        }
+//    }
 
     // Getters
     public Deck getDeck() { return deck; }
