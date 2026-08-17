@@ -3,11 +3,11 @@
 .vscode/
 *.iml
 
-# Arquivos do Sistema Operacional
+# Operational System's files
 .DS_Store
 Thumbs.db
 
-# Pastas de build caso rode algo na raiz por engano
+# Build directories if something runs in root unexpectedly
 target/
 node_modules/
 dist/
