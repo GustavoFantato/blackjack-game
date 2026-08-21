@@ -1,13 +1,132 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlackJack Web</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="table-container">
+
+<!-- --- SECTION 2 - GAME BOARD --- -->
+<div id="game-board" class="game-board hidden">
+      
+    <!-- HUD Superior Esquerdo -->
+    <header class="hud">
+      <div id="hud-nickname" class="hud-line"></div>
+      <div id="hud-balance" class="hud-line"></div>
+    </header>
+
+    <!-- A Mesa (Fundo Verde Curvado) -->
+    <div class="casino-table">
+      
+      <!-- Linha Dourada Decorativa da Mesa -->
+      <div class="table-outline"></div>
+
+      <!-- DEALER AREA -->
+      <section class="dealer-area">
+        <h2 class="title-red">DEALER'S HAND</h2>
+        <p class="subtitle-mode"><span id="bot-strategy">Normal</span> MODE</p>
+        <p class="score-display">SCORE: <span id="dealer-score">0</span></p>
+        
+        <div id="dealer-cards" class="cards-container">
+          <!-- Cartas do Dealer entram aqui via JS -->
+        </div>
+      </section>
+
+      <!-- ÁREA CENTRAL: BOTÕES + CARTAS DO JOGADOR NO MEIO -->
+      <section class="action-area">
+        <button id="btn-stand" class="btn-action btn-stand">STAND</button>
+        
+        <div id="player-cards" class="cards-container">
+          <!-- Cartas do Jogador entram aqui via JS -->
+        </div>
+        
+        <button id="btn-hit" class="btn-action btn-hit">HIT</button>
+      </section>
+
+      <!-- PLAYER AREA (Textos inferiores) -->
+      <section class="player-area">
+        <p class="score-display">SCORE: <span id="player-score">0</span></p>
+        <h2 class="title-gold">YOUR HAND</h2>
+        <p class="bet-display">BET: <span id="current-bet">50</span></p>
+      </section>
+
+    </div>
+  </div>
+
+<!-- WELCOME'S SCREEN / LOGIN -->
+<div id="modal-welcome" class="modal-overlay">
+    <div class="card-panel welcome-card">
+      
+      <h2 class="welcome-subtitle">Welcome to</h2>
+      <h1 class="welcome-title">BlackJack Web</h1>
+      <p class="welcome-desc">Place your bets and beat the Dealer!</p>
+      
+<!-- DECORATIVE CARDS -->
+        <div class="welcome-cards-graphic">
+          <div class="g-card card-jack">
+            <div class="card-corner top-left">
+              <span class="rank">J</span><span class="suit">♠</span>
+            </div>
+            <div class="card-center">♠</div>
+            <div class="card-corner bottom-right">
+              <span class="rank">J</span><span class="suit">♠</span>
+            </div>
+          </div>
+          
+          <div class="g-card card-ace red">
+            <div class="card-corner top-left">
+              <span class="rank">A</span><span class="suit">♥</span>
+            </div>
+            <div class="card-center">♥</div>
+            <div class="card-corner bottom-right">
+              <span class="rank">A</span><span class="suit">♥</span>
+            </div>
+          </div>
+        </div>
+      <!-- FORMS -->
+      <form id="form-login">
+        <div class="input-header">
+          <span class="label-left">NICKNAME</span>
+          <span class="label-right">(minimum of 3 caract.)</span>
+        </div>
+        
+        <div class="input-wrapper">
+          <span class="icon-left">👤</span>
+          <input type="text" id="input-nickname" placeholder="Insert your nickname..." minlength="3" maxlength="20" required autocomplete="off">
+        </div>
+        
+        <button type="submit" class="btn btn-play-now">PLAY NOW ➔</button>
+      </form>
+
+    </div>
+  </div>
+
+    <!-- RESULT'S MODAL: WIN / LOSE -->
+    <div id="modal-result" class="modal-overlay hidden">
+      <div class="card-panel result-card">
+        <h1 id="result-title" class="result-title win">YOU WIN!</h1>
+
+        <button id="btn-play-again" class="btn btn-gold-pill">PLAY AGAIN ➔</button>
+
+        <div class="result-details">
+          <p>Nickname: <span id="result-nickname">--</span></p>
+          <p>Current Balance: <span id="result-balance">$0</span></p>
+        </div>
+
+        <button id="btn-leave" class="btn btn-outline">LEAVE TABLE</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
 </html>
