@@ -12,25 +12,30 @@ import java.util.Map;
 public class GameService {
 
     private final Map<String, PlayerStrategy> strategiesMap;
+    private final PlayerService playerService;
 
     private Player player;
     private Player dealer;
     private BlackJackGame game;
 
     @Autowired
-    public GameService(Map<String, PlayerStrategy> strategiesMap){
+    public GameService(Map<String, PlayerStrategy> strategiesMap, PlayerService playerService){
         this.strategiesMap = strategiesMap;
+        this.playerService = playerService;
     }
 
     // When the game starts or player press "Play again" button
     public void startNewRound(String playerName, String strategyChoice, double betAmount){
 
+        PlayerEntity playerEntity = playerService.getOrCreatePlayer(playerName);
+
         // 1. No player created (game has just started)
         // 2. If play again, it just ignores and continues being the same player and wallet
         if (this.player == null){
-            this.player = new Player(playerName, new HumanStrategy());
+            this.player = new Player(playerName, new HumanStrategy(), playerEntity.getBalance());
         } else {
             this.player.clearHand();
+            this.player.getWallet().setCash(playerEntity.getBalance());
         }
 
         // Creating the dealer
@@ -38,8 +43,14 @@ public class GameService {
         this.dealer = new Player("Dealer", botStrategy);
 
         this.game = new BlackJackGame(player, dealer);
+        boolean betSuccessful = this.game.newPlayerBet(betAmount);
 
-        this.game.newPlayerBet(betAmount);
+        if (!betSuccessful) {
+            throw new IllegalArgumentException("Insufficient funds in the bank to place the bet!");
+        }
+
+        playerEntity.setBalance(this.player.getWallet().getCash()); // Has already been debited
+        playerService.save(playerEntity); // save in the database
         this.game.startRound();
     }
 
@@ -60,6 +71,7 @@ public class GameService {
 
         // Determines the winner and adjust the player's wallet
         game.determineWinner();
+        syncWalletWithDatabase();
     }
 
 
@@ -80,6 +92,16 @@ public class GameService {
 
         return strategiesMap.getOrDefault(beanName, strategiesMap.get("conservativeStrategy"));
     }
+
+    private void syncWalletWithDatabase(){
+        PlayerEntity playerEntity = playerService.getOrCreatePlayer(player.getName());
+
+        double finalBalance = player.getWallet().getCash();
+
+        playerEntity.setBalance(finalBalance);
+        playerService.save(playerEntity);
+    }
+
 
     // Getters
 

@@ -424,62 +424,91 @@
   }
   
   /* Formulário e Input */
-  .input-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-  }
-  
-  .label-left {
-    color: #d4af37;
-    font-size: 0.7rem;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-  }
-  
-  .label-right {
-    color: #6b8f79;
-    font-size: 0.7rem;
-  }
-  
-  .input-wrapper {
-    position: relative;
-    margin-bottom: 1.5rem;
-  }
-  
-  .input-wrapper input {
-    width: 100%;
-    padding: 0.9rem 2.5rem;
-    background: #041208;
-    border: 1px solid #1b4d2e;
-    border-radius: 6px;
-    color: white;
-    font-size: 1rem;
-    outline: none;
-    transition: border 0.3s;
-  }
-  
-  .input-wrapper input:focus {
-    border-color: #d4af37;
-  }
-  
-  .input-wrapper .icon-left {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    filter: grayscale(1) opacity(0.5); /* Deixa o emoji mais discreto */
-  }
-  
-  .input-wrapper .icon-right {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    filter: grayscale(1) opacity(0.5);
-    cursor: pointer;
-  }
-  
+/* Espaçamento entre cada grupo */
+.form-group {
+  margin-bottom: 1.2rem;
+  width: 100%;
+}
+
+/* Cabeçalho das labels (Alinhado à esquerda e separado) */
+.input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.label-left {
+  color: #d4af37;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.label-right {
+  color: #6b8f79;
+  font-size: 0.7rem;
+}
+
+/* Container do input */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Estilo Único e Padronizado para os 3 Inputs */
+.custom-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 1rem;
+  background-color: #06160e; /* Fundo verde escuro do card */
+  border: 1px solid #b89742; /* Borda amarela/dourada idêntica à imagem */
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+/* Ajuste específico para o Nickname (por causa do ícone 👤) */
+#input-nickname {
+  padding-left: 2.5rem;
+}
+
+.input-wrapper .icon-left {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  filter: grayscale(1) opacity(0.5);
+  pointer-events: none;
+}
+
+/* Efeito ao focar no campo */
+.custom-input:focus {
+  border-color: #ffd700;
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
+}
+
+/* Estilo do Select (Estratégia) */
+select.custom-input {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d4af37'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2rem;
+  padding-right: 2.5rem;
+}
+
+select.custom-input option {
+  background-color: #06160e;
+  color: #ffffff;
+}
+
   /* Botão Play Now Dourado */
   .btn-play-now {
     width: 100%;
@@ -494,6 +523,7 @@
     border: none;
     cursor: pointer;
     transition: all 0.2s;
+    margin-top: 30px;
   }
   
   .btn-play-now:hover {

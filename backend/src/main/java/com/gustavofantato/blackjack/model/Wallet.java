@@ -56,4 +56,10 @@ public class Wallet {
     public double getCash() {
         return cash;
     }
+
+    // Setters
+
+    public void setCash(double cash) {
+        this.cash = cash;
+    }
 }

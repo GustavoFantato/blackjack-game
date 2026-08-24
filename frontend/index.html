@@ -93,18 +93,44 @@
         </div>
       <!-- FORMS -->
       <form id="form-login">
-        <div class="input-header">
-          <span class="label-left">NICKNAME</span>
-          <span class="label-right">(minimum of 3 caract.)</span>
+        <!-- NICKNAME -->
+        <div class="form-group">
+            <div class="input-header">
+                <span class="label-left">NICKNAME</span>
+                <span class="label-right">(minimum of 3 caract.)</span>
+            </div>
+            <div class="input-wrapper">
+                <span class="icon-left">👤</span>
+                <input type="text" id="input-nickname" class="custom-input" placeholder="Insert your nickname..." required />
+            </div>
         </div>
-        
-        <div class="input-wrapper">
-          <span class="icon-left">👤</span>
-          <input type="text" id="input-nickname" placeholder="Insert your nickname..." minlength="3" maxlength="20" required autocomplete="off">
+    
+        <!-- INITIAL BET -->
+        <div class="form-group">
+            <div class="input-header">
+                <span class="label-left">INITIAL BET ($)</span>
+            </div>
+            <div class="input-wrapper">
+                <input type="number" id="input-bet" class="custom-input" value="50" min="10" step="10" required />
+            </div>
         </div>
-        
-        <button type="submit" class="btn btn-play-now">PLAY NOW ➔</button>
-      </form>
+    
+        <!-- DEALER STRATEGY -->
+        <div class="form-group">
+            <div class="input-header">
+                <span class="label-left">DEALER STRATEGY</span>
+            </div>
+            <div class="input-wrapper">
+                <select id="select-strategy" class="custom-input">
+                    <option value="1">Conservative</option>
+                    <option value="2">Aggressive</option>
+                    <option value="3">Cheater</option>
+                </select>
+            </div>
+        </div>
+    
+        <button type="submit" class="btn-play-now">PLAY NOW ➔</button>
+    </form>
 
     </div>
   </div>

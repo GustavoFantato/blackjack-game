@@ -154,8 +154,8 @@ public class BlackJackGame {
             return;
         }
         if (playerScore > botScore) {
-//
-            playerWins();            System.out.println("Player wins! (" + playerScore + " vs " + botScore + ")");
+//            System.out.println("Player wins! (" + playerScore + " vs " + botScore + ")");
+            playerWins();
             return;
         }
         if (botScore > playerScore) {

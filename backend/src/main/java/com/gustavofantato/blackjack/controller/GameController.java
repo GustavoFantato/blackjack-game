@@ -1,13 +1,15 @@
 package com.gustavofantato.blackjack.controller;
 
+import com.gustavofantato.blackjack.model.PlayerEntity;
 import com.gustavofantato.blackjack.service.GameService;
+import com.gustavofantato.blackjack.service.PlayerService;
 import com.gustavofantato.blackjack.strategy.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/game") // controller's routes
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*") // http://localhost:5173
 public class GameController {
 
     private final GameService gameService;
