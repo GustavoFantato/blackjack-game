@@ -116,10 +116,11 @@
   
   /* Áreas da Mesa */
   .dealer-area {
-    text-align: center;
-    z-index: 2;
-    margin-bottom: 2rem;
-  }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
   
   .player-area {
     text-align: center;
@@ -151,10 +152,15 @@
   .subtitle-mode { 
     color: #e5e5e5; 
     font-size: 0.9rem; 
-    font-family: 'Georgia', serif; 
+    font-family: 'Spectral', serif;
     margin-bottom: 0.8rem; 
     text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
-  }
+  } 
+
+  .subtitle-mode span {
+    font-family: inherit;
+    color: #d4af37; 
+}
   
   .score-display, .bet-display { 
     color: #ffffff; 
@@ -311,6 +317,15 @@
     transform: scale(1.05);
     filter: brightness(1.1);
   }
+
+  #dealer-cards, #player-cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    min-height: 115px;
+    margin: 8px 0;
+}
   
   /* MODAIS E OVERLAYS (SECTIONS 2, 3, 4) */
   .modal-overlay {

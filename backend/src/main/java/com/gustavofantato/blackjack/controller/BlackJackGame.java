@@ -15,6 +15,8 @@ public class BlackJackGame {
     private double currentBet;
     private final double winMultiplier;
     private final double blackjackMultiplier;
+    private boolean didPlayerStand;
+    private boolean gameOver;
 
     // Constructor
     public BlackJackGame(Player player, Player bot) {
@@ -23,6 +25,7 @@ public class BlackJackGame {
         this.deck = new Deck();
         this.winMultiplier = 2.0;
         this.blackjackMultiplier = 2.5;
+        this.didPlayerStand = false;
     }
 
     // Methods
@@ -53,6 +56,7 @@ public class BlackJackGame {
     }
 
     public void hit(Player p) {
+
         Card card = deck.drawCard();
         p.receiveCard(card);
 
@@ -62,6 +66,7 @@ public class BlackJackGame {
 
     public void stand() {
 //        System.out.println("\n--- Dealer's Turn ---");
+        didPlayerStand = true;
         revealDealerCards(bot);
 //        System.out.println("Dealer reveals hidden card: " + bot.getHand());
         playDealerTurn();
@@ -181,4 +186,6 @@ public class BlackJackGame {
     public Deck getDeck() { return deck; }
     public Player getPlayer() { return player; }
     public Player getBot() { return bot; }
+    public boolean isPlayerStand(){ return didPlayerStand; }
+
 }

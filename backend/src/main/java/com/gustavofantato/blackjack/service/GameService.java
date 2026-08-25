@@ -57,9 +57,11 @@ public class GameService {
     public void playerHit(){
         validateGameInProgress();
 
-        if (!game.isBust(player) && !game.hasBlackjack(player)){
-            game.hit(player);
+        if (game.isBust(player) || game.hasBlackjack(player) || game.isPlayerStand()){
+            throw new IllegalArgumentException("Cannot hit: Round is already finished or player cannot take more cards.");
         }
+
+        game.hit(player);
     }
 
     public void playerStand(){

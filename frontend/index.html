@@ -32,27 +32,24 @@
       <!-- DEALER AREA -->
       <section class="dealer-area">
         <h2 class="title-red">DEALER'S HAND</h2>
-        <p class="subtitle-mode"><span id="bot-strategy">Normal</span> MODE</p>
-        <p class="score-display">SCORE: <span id="dealer-score">0</span></p>
+        <p class="subtitle-mode"><span id="bot-strategy"></span> MODE</p>
         
-        <div id="dealer-cards" class="cards-container">
-          <!-- Cartas do Dealer entram aqui via JS -->
-        </div>
+        <!-- Cartas entram AQUI para ficarem visíveis no campo verde -->
+        <div id="dealer-cards" class="cards-container"></div>
+
+        <p class="score-display">SCORE: <span id="dealer-score">?</span></p>
       </section>
 
-      <!-- ÁREA CENTRAL: BOTÕES + CARTAS DO JOGADOR NO MEIO -->
+      <!-- ÁREA CENTRAL: APENAS OS BOTÕES -->
       <section class="action-area">
         <button id="btn-stand" class="btn-action btn-stand">STAND</button>
-        
-        <div id="player-cards" class="cards-container">
-          <!-- Cartas do Jogador entram aqui via JS -->
-        </div>
-        
         <button id="btn-hit" class="btn-action btn-hit">HIT</button>
       </section>
 
-      <!-- PLAYER AREA (Textos inferiores) -->
+      <!-- PLAYER AREA -->
       <section class="player-area">
+        <div id="player-cards" class="cards-container"></div>
+
         <p class="score-display">SCORE: <span id="player-score">0</span></p>
         <h2 class="title-gold">YOUR HAND</h2>
         <p class="bet-display">BET: <span id="current-bet">50</span></p>
