@@ -138,7 +138,7 @@ function updateUI(game) {
 
     if (playerScoreElem) playerScoreElem.innerText = playerScore;
     if (dealerScoreElem) dealerScoreElem.innerText = isDealerRevealed ? dealerScore : '?';
-    if (currentBetElem && betInput) currentBetElem.innerText = betInput.value;
+    if (currentBetElem && betInput) currentBetElem.innerText = `${betInput.value} $`;
 
     checkGameStatus(game, playerScore);
 }
@@ -241,3 +241,4 @@ function formatCardValue(value) {
     };
     return map[value.toUpperCase()] || value;
 }
+
