@@ -58,6 +58,7 @@
     </div>
   </div>
 
+
 <!-- WELCOME'S SCREEN / LOGIN -->
 <div id="modal-welcome" class="modal-overlay">
     <div class="card-panel welcome-card">
@@ -132,21 +133,25 @@
     </div>
   </div>
 
-    <!-- RESULT'S MODAL: WIN / LOSE -->
-    <div id="modal-result" class="modal-overlay hidden">
-      <div class="card-panel result-card">
-        <h1 id="result-title" class="result-title win">YOU WIN!</h1>
-
-        <button id="btn-play-again" class="btn btn-gold-pill">PLAY AGAIN ➔</button>
-
-        <div class="result-details">
-          <p>Nickname: <span id="result-nickname">--</span></p>
-          <p>Current Balance: <span id="result-balance">$0</span></p>
+<!-- SECTION 3 - END GAME MODAL -->
+<div id="modal-result" class="hidden">
+    <div class="result-content">
+        <!-- Título com cor dinâmica -->
+        <h1 id="result-title">YOU WIN!</h1>
+        
+        <!-- Botão Play Again -->
+        <button id="btn-play-again" class="btn-glow-green">PLAY AGAIN ➔</button>
+        
+        <!-- Informações do Jogador -->
+        <div class="result-info">
+            <p>Nickname: <span id="result-nickname">{nickname}</span></p>
+            <p>Current Balance: $<span id="result-balance">{playerBalance}</span></p>
         </div>
-
-        <button id="btn-leave" class="btn btn-outline">LEAVE TABLE</button>
-      </div>
+        
+        <!-- Botão Leave Table -->
+        <button id="btn-leave-table" class="btn-outline-gold">LEAVE TABLE</button>
     </div>
+</div>
 
   </main>
 
