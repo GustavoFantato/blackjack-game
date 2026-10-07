@@ -460,24 +460,23 @@ btnPlayAgain?.addEventListener('click', async () => {
 
 /* --- LÓGICA DO LEAVE TABLE --- */
 btnLeaveTable?.addEventListener('click', () => {
-    // 1. Esconde a tela de resultado e a mesa de jogo
     const modalResult = document.getElementById('modal-result');
     if (modalResult) modalResult.classList.add('hidden');
     
     gameBoard.classList.add('hidden');
-    
-    // 2. Mostra a tela inicial de Login
     modalWelcome.classList.remove('hidden');
-
-    // 3. Reseta o formulário inteiro (limpa os inputs e volta o select pro padrão)
     formLogin.reset(); 
 
-    // 4. Limpa a mesa de jogo e placares visualmente para o próximo jogador não ver as cartas antigas
+    // Limpa a mesa de jogo
     document.getElementById('player-cards').innerHTML = '';
     document.getElementById('dealer-cards').innerHTML = '';
     document.getElementById('player-score').innerText = '0';
     document.getElementById('dealer-score').innerText = '?';
-
+    
+    // NOVO: Limpa o HUD completamente para o próximo jogador não ver dados antigos
+    if (hudNickname) hudNickname.innerHTML = '';
+    if (hudBalance) hudBalance.innerHTML = '';
+    
     const botStrategyElem = document.getElementById('bot-strategy');
     if (botStrategyElem) botStrategyElem.innerText = '';
 });
