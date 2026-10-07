@@ -1,4 +1,5 @@
 package com.gustavofantato.blackjack.service;
+
 import com.gustavofantato.blackjack.controller.BlackJackGame;
 import com.gustavofantato.blackjack.model.*;
 import com.gustavofantato.blackjack.strategy.HumanStrategy;
@@ -29,14 +30,7 @@ public class GameService {
 
         PlayerEntity playerEntity = playerService.getOrCreatePlayer(playerName);
 
-        // 1. No player created (game has just started)
-        // 2. If play again, it just ignores and continues being the same player and wallet
-        if (this.player == null){
-            this.player = new Player(playerName, new HumanStrategy(), playerEntity.getBalance());
-        } else {
-            this.player.clearHand();
-            this.player.getWallet().setCash(playerEntity.getBalance());
-        }
+        this.player = new Player(playerName, new HumanStrategy(), playerEntity.getBalance());
 
         // Creating the dealer
         PlayerStrategy botStrategy = resolveStrategy(strategyChoice);
@@ -106,7 +100,6 @@ public class GameService {
 
 
     // Getters
-
 
     public Player getDealer() {
         return dealer;
