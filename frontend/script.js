@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/game';
+const API_URL = 'https://blackjack-game-aa4k.onrender.com';
 
 const modalWelcome = document.getElementById('modal-welcome');
 const gameBoard = document.getElementById('game-board');
