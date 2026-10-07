@@ -34,7 +34,8 @@ formLogin.addEventListener('submit', async function(event) {
     }
 
     try {
-        const response = await fetch(`${API_URL}/start?name=${encodeURIComponent(nickname)}&strategy=${strategy}&bet=${bet}`, {
+        
+        const response = await fetch(`${API_URL}/api/game/start?name=${encodeURIComponent(nickname)}&strategy=${strategy}&bet=${bet}`, {
             method: 'POST'
         });
 
@@ -63,7 +64,8 @@ formLogin.addEventListener('submit', async function(event) {
 
 hitButton?.addEventListener('click', async() => {
     try {
-        const response = await fetch(`${API_URL}/hit`, { method: 'POST'});
+       
+        const response = await fetch(`${API_URL}/api/game/hit`, { method: 'POST'});
 
         if(!response.ok) {
             const errorText = await response.text();
@@ -81,7 +83,8 @@ hitButton?.addEventListener('click', async() => {
 
 standButton?.addEventListener('click', async() => {
     try {
-        const response = await fetch(`${API_URL}/stand`, { method: 'POST' });
+        
+        const response = await fetch(`${API_URL}/api/game/stand`, { method: 'POST' });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -393,7 +396,7 @@ async function showEndGameSequence(game, pScore, dScore) {
     // Injeta os dados no HTML da tela final
     if (resultTitle) {
         resultTitle.innerText = message;
-        resultTitle.className = textClass; // Isso garante a cor e o brilho certo!
+        resultTitle.className = textClass;
     }
     
     if (resultNickname) {
@@ -404,7 +407,6 @@ async function showEndGameSequence(game, pScore, dScore) {
         resultBalance.innerText = game.player?.wallet?.cash ?? game.player?.balance ?? 0;
     }
 
-    // Dá só meio segundo de respiro depois da última carta antes de escurecer a tela
     await sleep(500);
 
     // Revela a tela idêntica ao protótipo
@@ -429,8 +431,8 @@ btnPlayAgain?.addEventListener('click', async () => {
     const strategy = strategySelect.value;
 
     try {
-        // 3. Inicia um novo jogo no Backend (O Java vai manter o usuário e descontar a nova aposta)
-        const response = await fetch(`${API_URL}/start?name=${encodeURIComponent(nickname)}&strategy=${strategy}&bet=${bet}`, {
+        // CAMINHO CORRIGIDO: /api/game/start
+        const response = await fetch(`${API_URL}/api/game/start?name=${encodeURIComponent(nickname)}&strategy=${strategy}&bet=${bet}`, {
             method: 'POST'
         });
 
@@ -475,8 +477,7 @@ btnLeaveTable?.addEventListener('click', () => {
     document.getElementById('dealer-cards').innerHTML = '';
     document.getElementById('player-score').innerText = '0';
     document.getElementById('dealer-score').innerText = '?';
-    
-    // Opcional: injeta "MODE" vazio de volta na tela para quando o próximo entrar
+
     const botStrategyElem = document.getElementById('bot-strategy');
     if (botStrategyElem) botStrategyElem.innerText = '';
 });
