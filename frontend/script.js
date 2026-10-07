@@ -14,13 +14,18 @@ const hitButton = document.getElementById('btn-hit');
 const standButton = document.getElementById('btn-stand');
 const botStrategyElem = document.getElementById('bot-strategy');
 
+// NOVO: Cadeado global para evitar spam de cliques
+let isProcessing = false; 
+
 formLogin.addEventListener('submit', async function(event) {
     event.preventDefault();
+
+    // Se já estiver a carregar um pedido, ignora os cliques extra
+    if (isProcessing) return; 
 
     const nickname = nicknameInput.value;
     const bet = parseFloat(betInput.value);
     const strategy = strategySelect.value;
-
     const strategyText = strategySelect.options[strategySelect.selectedIndex].text;
 
     if (!nickname || nickname.length < 3) {
@@ -33,8 +38,11 @@ formLogin.addEventListener('submit', async function(event) {
         return;
     }
 
+    isProcessing = true; // Tranca o cadeado
+    const submitBtn = formLogin.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true; // Desativa o botão de play visualmente
+
     try {
-        
         const response = await fetch(`${API_URL}/api/game/start?name=${encodeURIComponent(nickname)}&strategy=${strategy}&bet=${bet}`, {
             method: 'POST'
         });
@@ -59,12 +67,20 @@ formLogin.addEventListener('submit', async function(event) {
 
     } catch (error) {
         alert("Insufficient funds or backend error! Check your database balance.");
+    } finally {
+        isProcessing = false; // Destranca o cadeado quer dê erro ou sucesso
+        if (submitBtn) submitBtn.disabled = false;
     }
 });
 
 hitButton?.addEventListener('click', async() => {
+    if (isProcessing || hitButton.disabled) return;
+    
+    isProcessing = true;
+    hitButton.disabled = true;
+    standButton.disabled = true;
+
     try {
-       
         const response = await fetch(`${API_URL}/api/game/hit`, { method: 'POST'});
 
         if(!response.ok) {
@@ -78,12 +94,24 @@ hitButton?.addEventListener('click', async() => {
 
     } catch (error) {
         alert("An error occurred while hitting a card.");
+    } finally {
+        isProcessing = false;
+        // O updateUI já se encarrega de reativar os botões se o jogo não tiver acabado
+        if (document.getElementById('modal-result')?.classList.contains('hidden')) {
+             hitButton.disabled = false;
+             standButton.disabled = false;
+        }
     }
 });
 
 standButton?.addEventListener('click', async() => {
+    if (isProcessing || standButton.disabled) return;
+    
+    isProcessing = true;
+    hitButton.disabled = true;
+    standButton.disabled = true;
+
     try {
-        
         const response = await fetch(`${API_URL}/api/game/stand`, { method: 'POST' });
 
         if (!response.ok) {
@@ -93,11 +121,10 @@ standButton?.addEventListener('click', async() => {
         const game = await response.json();
         updateUI(game);
 
-        if (hitButton) hitButton.disabled = true;
-        if (standButton) standButton.disabled = true;
-
     } catch (error) {
         alert("Failed to process stand action. Please try again.");
+    } finally {
+        isProcessing = false;
     }
 });
 
@@ -109,10 +136,8 @@ async function updateUI(game) {
         hudNickname.innerHTML = `<span style="color: #D4AF37; font-weight: 600;">Logged in as:</span> <span style="color: #FFFFFF;">${pName}</span>`;
     }
     
-    // 1. Cria a trava: Verifica se é o final da rodada (Stand, Bust, ou GameOver)
     const isRoundFinishedForHud = game.playerStand === true || game.isPlayerStand === true || game.state === 'FINISHED' || game.isGameOver || (game.player?.hand?.score > 21);
 
-    // 2. Só atualiza o saldo do HUD no meio da partida. Se o jogo acabou, congela o valor!
     if (hudBalance && !isRoundFinishedForHud) {
         const pCash = game.player?.wallet?.cash ?? game.player?.balance ?? 0;
         hudBalance.innerHTML = `<span style="color: #D4AF37; font-weight: 600;">Balance:</span> <span style="color: #FFFFFF;">$${pCash}</span>`;
@@ -145,24 +170,20 @@ async function updateUI(game) {
 
 
     // --- RENDERIZAÇÃO E ANIMAÇÕES ---
-    
-    // Jogador (Anima somente a última, e bloqueia se for Stand)
     renderCards('player-cards', playerCards, false, false, !isStandAction, false);
 
     const dealerContainer = document.getElementById('dealer-cards');
 
-if (isDealerRevealed) {
+    if (isDealerRevealed) {
         if (hitButton) hitButton.disabled = true;
         if (standButton) standButton.disabled = true;
 
-        // 1. Garante que as 2 cartas iniciais estão renderizadas
         if (dealerContainer.children.length === 0) {
             renderCards('dealer-cards', dealerCards.slice(0, 2), true, false, false, false);
         }
 
-        await sleep(600); // Suspense inicial
+        await sleep(600);
 
-        // 2. FLIP: Transforma a carta virada
         if (dealerContainer.children.length >= 2 && dealerCards.length >= 2) {
             const hiddenCard = dealerContainer.children[1];
             
@@ -188,16 +209,14 @@ if (isDealerRevealed) {
                     </div>
                 `;
 
-                // ATUALIZA O PLACAR: Soma apenas as duas primeiras cartas
                 if (dealerScoreElem) {
                     dealerScoreElem.innerText = calculateScoreFallback(dealerCards.slice(0, 2));
                 }
 
-                await sleep(1800); // 800ms da animação + 1 segundo extra
+                await sleep(1800);
             }
         }
 
-        // 3. DROP: O dealer compra cartas
         for (let i = 2; i < dealerCards.length; i++) {
             if (dealerContainer.children.length > i) continue;
 
@@ -225,29 +244,24 @@ if (isDealerRevealed) {
             
             dealerContainer.appendChild(newCardElem);
 
-            // ATUALIZA O PLACAR: Soma as cartas na mesa até o momento atual (i + 1)
             if (dealerScoreElem) {
                 dealerScoreElem.innerText = calculateScoreFallback(dealerCards.slice(0, i + 1));
             }
 
-            await sleep(1800); // Delay extra entre cada carta nova caindo
+            await sleep(1800);
         }
 
-        // Atualiza a interface final como garantia
         if (dealerScoreElem) dealerScoreElem.innerText = dealerScore;
         checkGameStatus(game, playerScore);
 
     } else {
-        // Fase Normal do jogo (Dealer oculto)
         renderCards('dealer-cards', dealerCards, true, false, false, false);
         if (dealerScoreElem) dealerScoreElem.innerText = '?';
         checkGameStatus(game, playerScore);
     }
 
-    // Atualiza a interface final como garantia
     if (dealerScoreElem) dealerScoreElem.innerText = isDealerRevealed ? dealerScore : '?';
 
-    // VERIFICA SE O JOGO ACABOU PARA DISPARAR A ANIMAÇÃO FINAL
     const isPlayerBust = playerScore > 21;
     const isRoundFinished = isPlayerBust || game.playerStand === true || game.isPlayerStand === true || game.state === 'FINISHED';
 
@@ -255,7 +269,6 @@ if (isDealerRevealed) {
         if (hitButton) hitButton.disabled = true;
         if (standButton) standButton.disabled = true;
         
-        // Dispara a animação e depois abre o painel
         await showEndGameSequence(game, playerScore, dealerScore);
     }
 }
@@ -296,12 +309,10 @@ function renderCards(containerId, cards, isDealer = false, isRevealed = false, a
         const cardElement = document.createElement('div');
         cardElement.className = 'card';
 
-        // 1. Aplica o drop apenas na última carta comprada
         if (animateLast && index === cards.length - 1) {
             cardElement.classList.add('animate-drop');
         }
         
-        // 2. Aplica o flip na carta oculta do dealer quando é a hora de revelar
         if (animateFlip && index === 1) {
             cardElement.classList.add('animate-flip');
         }
@@ -378,7 +389,6 @@ async function showEndGameSequence(game, pScore, dScore) {
     const resultNickname = document.getElementById('result-nickname');
     const resultBalance = document.getElementById('result-balance');
     
-    // Lógica para saber quem ganhou
     const pBust = pScore > 21;
     const dBust = dScore > 21;
     
@@ -393,7 +403,6 @@ async function showEndGameSequence(game, pScore, dScore) {
         textClass = "text-lose";
     }
 
-    // Injeta os dados no HTML da tela final
     if (resultTitle) {
         resultTitle.innerText = message;
         resultTitle.className = textClass;
@@ -409,29 +418,29 @@ async function showEndGameSequence(game, pScore, dScore) {
 
     await sleep(500);
 
-    // Revela a tela idêntica ao protótipo
     if (modalResult) {
         modalResult.classList.remove('hidden');
     }
 }
 
-// Capturando os botões da Section 3
 const btnPlayAgain = document.getElementById('btn-play-again');
 const btnLeaveTable = document.getElementById('btn-leave-table');
 
 /* --- LÓGICA DO PLAY AGAIN --- */
 btnPlayAgain?.addEventListener('click', async () => {
-    // 1. Esconde a tela de resultado
+    // Evita o double click
+    if (isProcessing) return;
+    isProcessing = true;
+    btnPlayAgain.disabled = true; // Desativa visualmente o botão
+
     const modalResult = document.getElementById('modal-result');
     if (modalResult) modalResult.classList.add('hidden');
 
-    // 2. Resgata os mesmos dados que o jogador usou na última partida
     const nickname = nicknameInput.value;
     const bet = parseFloat(betInput.value);
     const strategy = strategySelect.value;
 
     try {
-        // CAMINHO CORRIGIDO: /api/game/start
         const response = await fetch(`${API_URL}/api/game/start?name=${encodeURIComponent(nickname)}&strategy=${strategy}&bet=${bet}`, {
             method: 'POST'
         });
@@ -442,19 +451,19 @@ btnPlayAgain?.addEventListener('click', async () => {
 
         const game = await response.json();
 
-        // 4. Limpa a mesa antes de atualizar para não bugar animações antigas
         document.getElementById('dealer-cards').innerHTML = '';
         document.getElementById('player-cards').innerHTML = '';
 
-        // 5. Atualiza a UI com a nova rodada
         updateUI(game);
 
-        // 6. Reativa os botões de ação
         if (hitButton) hitButton.disabled = false;
         if (standButton) standButton.disabled = false;
 
     } catch (error) {
         alert("Insufficient funds to play again or backend error!");
+    } finally {
+        isProcessing = false; // Liberta o cadeado
+        btnPlayAgain.disabled = false; // Reativa o botão
     }
 });
 
@@ -467,13 +476,11 @@ btnLeaveTable?.addEventListener('click', () => {
     modalWelcome.classList.remove('hidden');
     formLogin.reset(); 
 
-    // Limpa a mesa de jogo
     document.getElementById('player-cards').innerHTML = '';
     document.getElementById('dealer-cards').innerHTML = '';
     document.getElementById('player-score').innerText = '0';
     document.getElementById('dealer-score').innerText = '?';
     
-    // NOVO: Limpa o HUD completamente para o próximo jogador não ver dados antigos
     if (hudNickname) hudNickname.innerHTML = '';
     if (hudBalance) hudBalance.innerHTML = '';
     
